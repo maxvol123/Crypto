@@ -1,33 +1,10 @@
 import { Card, Layout, Statistic, List, Typography, Spin} from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import { FetchCrypto, FetchCryptoAssets } from '../../api';
-import { percentdifference } from '../../utils';
+import { useContext } from 'react';
+import CryptoContext from '../../context/cryptocontext';
 
 export default function Sider() {
-    const [loading, setLoading] = useState(false)
-    const [crypto, setCrypto] = useState([])
-    const [assets, setAssets] = useState([])
-    useEffect(()=>{
-        async function preload() {
-            const {result} = await FetchCrypto()
-            setLoading(true)
-            const assets = await FetchCryptoAssets()
-            setCrypto(result)
-            setAssets(assets.map(asset=>{
-                const coin = result.find(c=>c.id===asset.id)
-                return{
-                    grow: asset.price < coin.price,
-                    growPercent: percentdifference(asset.price, coin.price),
-                    totalAmount: asset.amount * coin.price,
-                    totalProfit: asset.amount * coin.price - asset.amount*asset.price,
-                    ...asset
-                }
-            }))
-            setLoading(false)
-        }
-        preload()
-    },[])
+  const{loading, assets, crypto}=useContext(CryptoContext) 
     const siderStyle = {
         padding: "1rem"
       };
